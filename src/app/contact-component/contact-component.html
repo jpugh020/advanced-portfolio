@@ -1,0 +1,261 @@
+<!-- contact-form.component.html -->
+<div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300"
+     [class.light-mode]="!isDarkMode"
+     [class.dark-mode]="isDarkMode">
+  
+  <!-- Header Section -->
+  <div class="max-w-4xl mx-auto text-center mb-12 pt-[1%]">
+    
+    
+    <h1 class="text-4xl font-bold mb-4 transition-colors duration-300"
+        [class.light-mode]="!isDarkMode"
+        [class.dark-mode]="isDarkMode">
+      Let's Work Together
+    </h1>
+    
+    <p class="text-xl max-w-2xl mx-auto transition-colors duration-300"
+       [class.light-mode]="!isDarkMode"
+       [class.dark-mode]="isDarkMode">
+      Ready to bring your vision to life? Share your project details and let's discuss 
+      how we can create something amazing together.
+    </p>
+  </div>
+
+  <!-- Contact Form -->
+  <div class="max-w-2xl mx-auto">
+    <mat-card class="overflow-hidden shadow-2xl border-0 transition-colors duration-300"
+              [class.light-mode]="!isDarkMode"
+              [class.dark-mode]="isDarkMode">
+      
+      <!-- Form Header -->
+      <div class="px-8 py-6 border-b transition-colors duration-300"
+           [class.border-gray-200]="!isDarkMode"
+           [class.border-gray-700]="isDarkMode">
+        <h2 class="text-2xl font-semibold transition-colors duration-300"
+            [class.light-mode]="!isDarkMode"
+            [class.dark-mode]="isDarkMode">
+          Project Inquiry
+        </h2>
+        <p class="mt-2 transition-colors duration-300"
+           [class.light-mode]="!isDarkMode"
+           [class.dark-mode]="isDarkMode">
+          Fill out the form below and I'll get back to you within 24 hours.
+        </p>
+      </div>
+
+      <!-- Form Content -->
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="p-8 space-y-6">
+        
+        <!-- Name Field -->
+        <mat-form-field appearance="fill" class="w-full custom-field">
+          <mat-label>Name or Company</mat-label>
+          <input matInput 
+                 formControlName="name" 
+                 placeholder="John Doe or Acme Corp"
+                 [class.text-gray-900]="!isDarkMode"
+                 [class.text-white]="isDarkMode">
+          <mat-icon matSuffix [class.text-gray-400]="!isDarkMode" 
+                    [class.text-gray-500]="isDarkMode">person</mat-icon>
+          @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
+            <mat-error>Name is required</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Email Field -->
+        <mat-form-field appearance="fill" class="w-full custom-field">
+          <mat-label>Email Address</mat-label>
+          <input matInput 
+                 type="email" 
+                 formControlName="email" 
+                 placeholder="john@example.com"
+                 [class.text-gray-900]="!isDarkMode"
+                 [class.text-white]="isDarkMode">
+          <mat-icon matSuffix [class.text-gray-400]="!isDarkMode" 
+                    [class.text-gray-500]="isDarkMode">email</mat-icon>
+          @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
+            <mat-error>
+              @if (contactForm.get('email')?.errors?.['required']) {
+                Email is required
+              } @else if (contactForm.get('email')?.errors?.['email']) {
+                Please enter a valid email address
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Phone Field (Optional) -->
+        <mat-form-field appearance="fill" class="w-full custom-field">
+          <mat-label>Phone Number (Optional)</mat-label>
+          <input matInput 
+                 type="tel" 
+                 formControlName="phone" 
+                 placeholder="+1 (555) 123-4567"
+                 [class.text-gray-900]="!isDarkMode"
+                 [class.text-white]="isDarkMode">
+          <mat-icon matSuffix [class.text-gray-400]="!isDarkMode" 
+                    [class.text-gray-500]="isDarkMode">phone</mat-icon>
+        </mat-form-field>
+
+        <!-- Budget Field (Optional) -->
+        <mat-form-field appearance="fill" class="w-full custom-field">
+          <mat-label>Project Budget (Optional)</mat-label>
+          <mat-select formControlName="budget">
+            <mat-option value="">Select a budget range</mat-option>
+            @for (option of budgetOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+          <mat-icon matSuffix [class.text-gray-400]="!isDarkMode" 
+                    [class.text-gray-500]="isDarkMode">attach_money</mat-icon>
+        </mat-form-field>
+
+        <!-- Project Type Selector -->
+        <mat-form-field appearance="fill" class="w-full custom-field">
+          <mat-label>Type of Service</mat-label>
+          <mat-select formControlName="serviceType">
+            @for (service of serviceTypes; track service.value) {
+              <mat-option [value]="service.value">
+                {{ service.label }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-icon matSuffix [class.text-gray-400]="!isDarkMode" 
+                    [class.text-gray-500]="isDarkMode">build</mat-icon>
+          @if (contactForm.get('serviceType')?.invalid && contactForm.get('serviceType')?.touched) {
+            <mat-error>Please select a service type</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Description Field -->
+        <mat-form-field appearance="fill" class="w-full custom-field">
+          <mat-label>Project Description</mat-label>
+          <textarea matInput 
+                    formControlName="description" 
+                    rows="5" 
+                    placeholder="Tell me about your project, goals, timeline, and any specific requirements..."
+                    [class.text-gray-900]="!isDarkMode"
+                    [class.text-white]="isDarkMode">
+          </textarea>
+          <mat-icon matSuffix [class.text-gray-400]="!isDarkMode" 
+                    [class.text-gray-500]="isDarkMode">description</mat-icon>
+          @if (contactForm.get('description')?.invalid && contactForm.get('description')?.touched) {
+            <mat-error>Project description is required</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Character count for description -->
+        <div class="flex justify-end">
+          <span class="text-sm transition-colors duration-300"
+                [class.text-gray-500]="!isDarkMode"
+                [class.text-gray-400]="isDarkMode">
+            {{ contactForm.get('description')?.value?.length || 0 }}/1000 characters
+          </span>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex flex-col sm:flex-row gap-4 pt-6">
+          <button type="submit" 
+                  mat-raised-button 
+                  color="primary" 
+                  class="flex-1 py-3 text-lg font-medium"
+                  [disabled]="contactForm.invalid || isSubmitting">
+            @if (isSubmitting) {
+              <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
+              Sending...
+            } @else {
+              <mat-icon class="mr-2">send</mat-icon>
+              Send Message
+            }
+          </button>
+          
+          <button type="button" 
+                  mat-stroked-button 
+                  class="sm:w-auto py-3 transition-colors duration-300"
+                  [class.text-gray-700]="!isDarkMode"
+                  [class.text-gray-300]="isDarkMode"
+                  [class.border-gray-300]="!isDarkMode"
+                  [class.border-gray-600]="isDarkMode"
+                  (click)="resetForm()">
+            <mat-icon class="mr-2">refresh</mat-icon>
+            Reset Form
+          </button>
+        </div>
+
+        <!-- Helper Text -->
+        <div class="pt-4 text-center">
+          <p class="text-sm transition-colors duration-300"
+             [class.text-gray-500]="!isDarkMode"
+             [class.text-gray-400]="isDarkMode">
+            <mat-icon class="text-sm mr-1 align-text-bottom">lock</mat-icon>
+            Your information is secure and will never be shared with third parties.
+          </p>
+        </div>
+      </form>
+    </mat-card>
+  </div>
+
+  <!-- Additional Contact Info -->
+  <div class="max-w-2xl mx-auto mt-12 text-center">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="flex flex-col items-center p-6 rounded-lg transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg"
+           [class.light-mode]="!isDarkMode"
+           [class.dark-mode]="isDarkMode">
+        <mat-icon class="text-3xl mb-3 transition-colors duration-300"
+                  [class.light-mode]="!isDarkMode"
+                  [class.dark-mode]="isDarkMode">
+          hourglass_bottom
+        </mat-icon>
+        <h3 class="font-semibold mb-2 transition-colors duration-300"
+            [class.light-mode]="!isDarkMode"
+            [class.dark-mode]="isDarkMode">
+          Response Time
+        </h3>
+        <p class="text-sm transition-colors duration-300"
+           [class.light-mode]="!isDarkMode"
+           [class.dark-mode]="isDarkMode">
+          Within 24 hours
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center p-6 rounded-lg transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg"
+           [class.light-mode]="!isDarkMode"
+           [class.dark-mode]="isDarkMode">
+        <mat-icon class="text-3xl mb-3 transition-colors duration-300"
+                  [class.light-mode]="!isDarkMode"
+                  [class.dark-mode]="isDarkMode">
+          schedule
+        </mat-icon>
+        <h3 class="font-semibold mb-2 transition-colors duration-300"
+            [class.light-mode]="!isDarkMode"
+            [class.dark-mode]="isDarkMode">
+          Availability
+        </h3>
+        <p class="text-sm transition-colors duration-300"
+           [class.light-mode]="!isDarkMode"
+           [class.dark-mode]="isDarkMode">
+          Mon-Fri 9AM-6PM EST
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center p-6 rounded-lg transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-lg"
+           [class.light-mode]="!isDarkMode"
+           [class.dark-mode]="isDarkMode">
+        <mat-icon class="text-3xl mb-3 transition-colors duration-300"
+                  [class.light-mode]="!isDarkMode"
+                  [class.dark-mode]="isDarkMode">
+          chat_bubble_outline
+        </mat-icon>
+        <h3 class="font-semibold mb-2 transition-colors duration-300"
+            [class.light-mode]="!isDarkMode"
+            [class.dark-mode]="isDarkMode">
+          Free Consultation
+        </h3>
+        <p class="text-sm transition-colors duration-300"
+           [class.light-mode]="!isDarkMode"
+           [class.dark-mode]="isDarkMode">
+          30-minute call
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

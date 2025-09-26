@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "./dist/",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -90,6 +91,14 @@
             "styles": [
               "src/styles.scss"
             ]
+          }
+        },
+        "deploy": {
+          "builder": "@netlify-builder/deploy:deploy",
+          "options": {
+            "outputPath": "./dist",
+            "netlifyToken": "nfp_H9hTpCcxkzhwV838Wb93YXMu6LK7twpX2564",
+            "siteId": "bd6749d5-e4da-4680-a168-03e6b17e9aad"
           }
         }
       }

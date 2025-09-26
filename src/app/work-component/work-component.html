@@ -1,0 +1,331 @@
+<!-- work-component.html -->
+<div class="min-h-screen pt-24 pb-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4">My Work</h1>
+      <p class="text-xl max-w-3xl mx-auto">
+        A collection of projects showcasing my skills in web and software development, 
+        from concept to deployment. Each project represents a unique challenge 
+        and learning experience.
+      </p>
+    </div>
+
+    <!-- Controls Bar -->
+    <div class="rounded-lg shadow-sm p-4 mb-8 relative z-40 bg-inherit">
+      <!-- Search and Controls Row -->
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <!-- Search and Filter Toggle -->
+        <div class="flex items-center gap-3 flex-1">
+          <mat-form-field appearance="fill" class="flex-1 max-w-lg search-field">
+            <mat-label>Search projects...</mat-label>
+            <input matInput [formControl]="searchControl" placeholder="Search by title, description, or technology">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+          
+          <button mat-stroked-button (click)="toggleFilters()" class="whitespace-nowrap">
+            <mat-icon>{{ showFilters ? 'expand_less' : 'tune' }}</mat-icon>
+            {{ showFilters ? 'Hide' : 'Filters' }}
+          </button>
+        </div>
+
+        <!-- View Controls -->
+        <div class="flex items-center gap-2">
+          <span class="text-sm mr-2">{{ filteredProjects.length }} projects</span>
+          
+          <!-- View Mode Toggle -->
+          <mat-button-toggle-group [value]="viewMode" (change)="viewMode = $event.value">
+            <mat-button-toggle value="grid">
+              <mat-icon>grid_view</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="list">
+              <mat-icon>view_list</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+
+      <!-- Expandable Filters -->
+      @if (showFilters) {
+        <div class="mt-4 pt-4 border-t filter-section-expanded">
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Category Filter -->
+            <mat-form-field appearance="fill" class="search-field">
+              <mat-label>Category</mat-label>
+              <mat-select [formControl]="categoryControl">
+                <mat-option value="all">All Categories</mat-option>
+                @for (category of categories; track category) {
+                  <mat-option [value]="category">
+                    {{ category }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Status Filter -->
+            <mat-form-field appearance="fill" class="search-field">
+              <mat-label>Status</mat-label>
+              <mat-select [formControl]="statusControl">
+                @for (status of statusOptions; track status.value) {
+                  <mat-option [value]="status.value">
+                    {{ status.label }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Featured Filter -->
+            <div class="flex items-center">
+              <mat-checkbox [formControl]="featuredControl" class="dark:text-gray-200">
+                Show only featured
+              </mat-checkbox>
+            </div>
+
+            <!-- Clear Filters -->
+            <div class="flex items-center">
+              <button mat-stroked-button (click)="clearFilters()" 
+                      class="w-full dark:text-gray-200 dark:border-gray-600">
+                <mat-icon>clear</mat-icon>
+                Clear Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Loading State -->
+    @if (loading$ | async) {
+      <div class="flex justify-center items-center py-12">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span class="ml-3 text-gray-600 dark:text-gray-400">Loading projects...</span>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (!(loading$ | async) && filteredProjects.length === 0) {
+      <div class="text-center py-12">
+        <mat-icon class="text-6xl mb-4">search_off</mat-icon>
+        <h3 class="text-xl font-medium mb-2">No projects found</h3>
+        <p class="mb-4">
+          Try adjusting your filters or search terms to find what you're looking for.
+        </p>
+        <button mat-raised-button color="primary" (click)="clearFilters()">
+          Clear All Filters
+        </button>
+      </div>
+    }
+
+    <!-- Projects Grid View -->
+    @if (!(loading$ | async) && filteredProjects.length > 0 && viewMode === 'grid') {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (project of filteredProjects; track project) {
+          <mat-card class="hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+            <!-- Project Image -->
+            <div class="relative h-48 overflow-hidden">
+              @if (project.imageurl) {
+                <img [src]="project.imageurl" 
+                     [alt]="project.title"
+                     class="w-full h-full object-cover">
+              } @else {
+                <!-- Fallback gradient with project initial -->
+                <div class="w-full h-full flex items-center justify-center gradient-bg">
+                  <span class="text-4xl font-bold">
+                    {{ project.title.charAt(0).toUpperCase() }}
+                  </span>
+                </div>
+              }
+
+              <!-- Featured Badge -->
+              @if (project.featured) {
+                <mat-chip class="absolute top-3 right-3" highlighted color="primary">
+                  <mat-icon matChipAvatar>star</mat-icon>
+                  Featured
+                </mat-chip>
+              }
+
+              <!-- Status Badge -->
+              <mat-chip [color]="getStatusChipColor(project.status)" class="absolute top-3 left-3" highlighted>
+                <mat-icon matChipAvatar>{{ getStatusIcon(project.status) }}</mat-icon>
+                {{ project.status | titlecase }}
+              </mat-chip>
+            </div>
+
+            <mat-card-content class="flex-grow p-6">
+              <!-- Project Title & Category -->
+              <div class="mb-3">
+                <h3 class="text-xl font-semibold mb-1">{{ project.title }}</h3>
+                <span class="text-sm font-medium category-text">{{ project.category }}</span>
+              </div>
+
+              <!-- Description -->
+              <p class="text-sm leading-relaxed mb-4 description-text">
+                {{ project.shortdescription || project.description | slice:0:120 }}
+                <span *ngIf="(project.shortdescription || project.description).length > 120">...</span>
+              </p>
+
+              <!-- Technologies -->
+              <div class="mb-4">
+                <div class="flex flex-wrap gap-1">
+                  @for (tech of project.technologies | slice:0:5; track tech) {
+                    <mat-chip class="text-xs" color="primary">
+                      {{ tech }}
+                    </mat-chip>
+                  }
+                  @if (project.technologies.length > 5) {
+                    <span class="text-xs meta-text self-center">
+                      +{{ project.technologies.length - 5 }} more
+                    </span>
+                  }
+                </div>
+              </div>
+
+              <!-- Project Dates -->
+              <div class="text-xs meta-text mb-4">
+                Started: {{ project.startdate | date:'MMM yyyy' }}
+                @if (project.enddate) {
+                  <span> • Completed: {{ project.enddate | date:'MMM yyyy' }}</span>
+                }
+              </div>
+            </mat-card-content>
+
+            <!-- Action Buttons -->
+            <mat-card-actions class="px-6 pb-6">
+              <div class="flex gap-2 w-full">
+                @if (project.liveurl) {
+                  <button mat-raised-button color="primary" 
+                          (click)="openLiveDemo(project.liveurl)"
+                          class="flex-1">
+                    <mat-icon>launch</mat-icon>
+                    Live Demo
+                  </button>
+                }
+                
+                @if (project.githuburl) {
+                  <button mat-stroked-button 
+                          (click)="openGithub(project.githuburl)"
+                          [class.flex-1]="!project.liveurl">
+                    <mat-icon>code</mat-icon>
+                    {{ project.liveurl ? 'Code' : 'View Code' }}
+                  </button>
+                }
+
+                <!-- Blog Post Button -->
+                @if (project.blogpost && project.blogid) {
+                  <button mat-stroked-button 
+                          (click)="openBlogPost(project.blogid)"
+                          class="flex-1">
+                    <mat-icon>article</mat-icon>
+                    Read More
+                  </button>
+                }
+
+                <!-- Fallback when no links available -->
+                @if (!project.liveurl && !project.githuburl && (!project.blogpost || !project.blogid)) {
+                  <button mat-stroked-button disabled class="flex-1">
+                    <mat-icon>hourglass_empty</mat-icon>
+                    Coming Soon
+                  </button>
+                }
+              </div>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+    }
+
+    <!-- Projects List View -->
+    @if (!(loading$ | async) && filteredProjects.length > 0 && viewMode === 'list') {
+      <div class="space-y-4">
+        @for (project of filteredProjects; track project) {
+          <mat-card class="list-view-card">
+            <mat-card-content>
+              <div class="flex flex-col lg:flex-row gap-6 p-6">
+                
+                <!-- Project Image -->
+                <div class="list-view-image gradient-bg rounded-lg overflow-hidden flex-shrink-0">
+                  <img *ngIf="project.imageurl" 
+                       [src]="project.imageurl" 
+                       [alt]="project.title"
+                       class="w-full h-full object-cover">
+                  <div *ngIf="!project.imageurl" 
+                       class="w-full h-full flex items-center justify-center">
+                    <span class="text-2xl font-bold text-white dark:text-gray-200">
+                      {{ project.title.charAt(0).toUpperCase() }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Project Info -->
+                <div class="flex-grow min-w-0">
+                  <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-2 mb-3">
+                    <div class="min-w-0">
+                      <h3 class="text-xl font-semibold mb-1 truncate">{{ project.title }}</h3>
+                      <span class="text-sm font-medium category-text">{{ project.category }}</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2">
+                      <mat-chip *ngIf="project.featured" color="primary" highlighted>
+                        <mat-icon matChipAvatar>star</mat-icon>
+                        Featured
+                      </mat-chip>
+                      <mat-chip *ngIf="project.blogpost" color="accent" highlighted>
+                        <mat-icon matChipAvatar>article</mat-icon>
+                        Blog Post
+                      </mat-chip>
+                      <mat-chip [color]="getStatusChipColor(project.status)" highlighted>
+                        {{ project.status | titlecase }}
+                      </mat-chip>
+                    </div>
+                  </div>
+
+                  <p class="description-text mb-4">{{ project.description }}</p>
+
+                  <!-- Technologies & Dates Row -->
+                  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div class="flex flex-wrap gap-1">
+                      <mat-chip *ngFor="let tech of project.technologies" 
+                               class="text-xs" color="primary">
+                        {{ tech }}
+                      </mat-chip>
+                    </div>
+                    
+                    <div class="text-xs meta-text whitespace-nowrap">
+                      {{ project.startdate | date:'MMM yyyy' }}
+                      <span *ngIf="project.enddate"> - {{ project.enddate | date:'MMM yyyy' }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="flex gap-2 mt-4">
+                    <button mat-raised-button color="primary" 
+                            *ngIf="project.liveurl"
+                            (click)="openLiveDemo(project.liveurl)">
+                      <mat-icon>launch</mat-icon>
+                      Live Demo
+                    </button>
+                    
+                    <button mat-stroked-button 
+                            *ngIf="project.githuburl"
+                            (click)="openGithub(project.githuburl)">
+                      <mat-icon>code</mat-icon>
+                      View Code
+                    </button>
+
+                    <button mat-stroked-button 
+                            *ngIf="project.blogpost && project.blogid"
+                            (click)="openBlogPost(project.blogid)"
+                            class="dark:border-gray-600 dark:text-gray-200">
+                      <mat-icon>article</mat-icon>
+                      Read More
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+  </div>
+</div>

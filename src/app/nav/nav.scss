@@ -1,0 +1,14 @@
+.nav-container ::ng-deep .mat-tab-header,
+.nav-container ::ng-deep .mat-tab-links {
+  /* Apply styles for mobile layout */
+  @media (max-width: 767px) {
+    flex-direction: column !important;
+    width: 100%; /* Ensure links span full width */
+  }
+}
+
+.nav-container ::ng-deep .mat-tab-links a {
+  /* Ensure each link takes up full width on mobile */
+  width: 100% !important;
+  text-align: left !important;
+}

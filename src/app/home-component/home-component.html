@@ -1,0 +1,37 @@
+<main class="flex flex-auto">
+    <div class="flex flex-col mr-auto ml-auto items-center" id="profilePic">
+        <!-- Profile image and tagline container: Takes full viewport height on mobile -->
+        <section class="flex flex-col items-center justify-center h-full min-h-vh sm:h-full" id="landingSec">
+            <!-- Profile image: Large on mobile for impact, smaller on larger screens -->
+            <img src="Owl-Pic.jpg" class="rounded-full aspect-square object-cover object-[60%_0%] w-[80%] mt-10 sm:mt-10 sm:w-[60%] md:w-[40%] lg:w-[25%] lg:mt-15 lg:mb-10 sm:mt-10 sm:mb-10" />
+            
+            <!-- Heading: Optimized for mobile first -->
+            <h1 class="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold mt-7 sm:mt-10 md:mt-15 text-center px-4 lg:mb-11 py-[3.5em] lg:pt-0 lg:pb-10 " [ngClass]="{'text-emerald-800': !update(), 'text-sky-300': update()}" >
+                Hi. I'm Jake, and I heard you need a developer.
+            </h1>
+        </section>
+        
+        <section class="flex flex-col items-center justify-center h-full min-h-vh sm:h-full"><p class="mt-10 sm:mt-15 mb-15 ml-5 mr-5 text-lg sm:text-xl md:text-2xl text-center">
+My coding journey began in 2013 with learning Python. I later earned my bachelor's degree from MTSU in 2021, where I studied Biology and Computer Science, and in the past decade my passion has evolved into polyglot programming.        </p>
+        
+        <!-- Language logos: Now visible on mobile but smaller -->
+<div class="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mt-10 w-full justify-items-center gap-y-6">
+            <img src="PythonLogo.png" alt="Python Language Logo" class="w-[80px] sm:w-[110px] translate-y-3">
+            <img src="CppLogo.png" alt="C++ Language Logo" class="w-[80px] sm:w-[110px] ">
+            <img src="ClangLogo.png" alt="C Language Logo" class="w-[80px] sm:w-[110px] ">
+            <img src="CsharpLogo.png" alt="C# Language Logo" class="w-[80px] sm:w-[110px] sm:mt-[2%]">
+            <img src="JsLogo.png" alt="JavaScript Language Logo" class="w-[80px] sm:w-[110px] rounded-lg translate-y-3">
+            <img src="TsLogo.png" alt="TypeScript Language Logo" class="w-[80px] sm:w-[110px] translate-y-3">
+        </div>
+        
+        <!-- Second paragraph: Now visible on mobile -->
+        <p class="mt-10 sm:mt-15 mb-15 ml-5 mr-5 text-lg sm:text-xl md:text-2xl text-center">
+        Through the years, programming has become one of my favorite creative outlets. Building, styling, and implementing elegant software solutions is my passion, and I would love to turn your ideas into reality.
+        </p>
+        <p class="mt-10 sm:mt-15 mb-15 ml-5 mr-5 text-lg sm:text-xl md:text-2xl text-center">
+            I'm currently working on a truly unique full-stack project — a custom program scheduling and animal management system for a zoological institution — where I get to combine my passion for code with my desire to help educate others about the natural world around us.
+        </p>
+        <button matButton="filled" class="mb-10" [routerLink]="'/work'">Head over and check out my portfolio!</button>
+        </section>
+    </div>
+</main>
