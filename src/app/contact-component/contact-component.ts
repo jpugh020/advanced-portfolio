@@ -1,4 +1,3 @@
-
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -100,12 +99,12 @@ export class ContactComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.contactForm.valid) {
       this.isSubmitting = true;
-      
+
       this.mailservice.sendEmail(this.contactForm.value)
         .then(response => {
           if (response.ok) {
             this.snackBar.open(
-              'Thank you for your message! I\'ll get back to you within 24 hours.', 
+              'Thank you for your message! I\'ll get back to you within 24 hours.',
               'Close',
               {
                 duration: 6000,
@@ -114,7 +113,7 @@ export class ContactComponent implements OnInit, OnDestroy {
                 panelClass: this.isDarkMode ? ['dark-snackbar'] : ['light-snackbar']
               }
             );
-            
+
             this.resetForm();
           } else {
             throw new Error('Failed to send message');
@@ -122,7 +121,7 @@ export class ContactComponent implements OnInit, OnDestroy {
         })
         .catch(error => {
           this.snackBar.open(
-            'Sorry, there was an error sending your message. Please try again.', 
+            'Sorry, there was an error sending your message. Please try again.',
             'Close',
             {
               duration: 6000,
@@ -140,9 +139,9 @@ export class ContactComponent implements OnInit, OnDestroy {
       Object.keys(this.contactForm.controls).forEach(key => {
         this.contactForm.get(key)?.markAsTouched();
       });
-      
+
       this.snackBar.open(
-        'Please fill in all required fields correctly.', 
+        'Please fill in all required fields correctly.',
         'Close',
         {
           duration: 4000,
