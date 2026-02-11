@@ -1,39 +1,35 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home-component/home-component';
-import { WorkComponent } from './work-component/work-component';
-import { BlogComponent } from './blog-component/blog-component';
-import { ContactComponent } from './contact-component/contact-component';
-import { BlogDetailComponent } from './blog-detail-component/blog-detail-component';
 
 export const routes: Routes = [
   {
-    path: 'about', 
-    component: HomeComponent,
-    title: "About"
+    path: 'about',
+    title: "About",
+    loadComponent: () => import('./home-component/home-component').then(m => m.HomeComponent)
   },
   {
     path: '',
-    component: HomeComponent,
-    title: "About"
+    title: "About",
+    loadComponent: () => import('./home-component/home-component').then(m => m.HomeComponent)
   },
   {
     path: 'work',
-    component: WorkComponent,
-    title: "Work"
+    title: "Work",
+    loadComponent: () => import('./work-component/work-component').then(m => m.WorkComponent)
   },
   {
     path: 'blog',
-    component: BlogComponent,
-    title: "Blog"
+    title: "Blog",
+    loadComponent: () => import('./blog-component/blog-component').then(m => m.BlogComponent)
   },
   {
     path: 'blog/:slug',
-    component: BlogDetailComponent,
-    title: "Blog Post"
+    title: "Blog Post",
+    loadComponent: () => import('./blog-detail-component/blog-detail-component').then(m => m.BlogDetailComponent)
   },
   {
     path: 'contact',
-    component: ContactComponent,
-    title: "Contact"
+    title: "Contact",
+    loadComponent: () => import('./contact-component/contact-component').then(m => m.ContactComponent)
+
   }
 ];
