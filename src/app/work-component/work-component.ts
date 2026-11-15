@@ -16,8 +16,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { combineLatest, debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 
 // Services
-import { ProjectsService, Project } from '../services/projects-service';
 import { ThemeService } from '../services/theme-service';
+import { Project, ProjectService } from '../services/projects-service';
 
 @Component({
   selector: 'app-work',
@@ -44,6 +44,7 @@ import { ThemeService } from '../services/theme-service';
 export class WorkComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private snackBar = inject(MatSnackBar);
+  private projectsService = inject(ProjectService);
 
   public isDarkMode: boolean = this.themeService.getTheme();
   public projects: Project[] = [];
@@ -74,11 +75,10 @@ export class WorkComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private projectsService: ProjectsService) {}
+  constructor() {}
 
   // Getters for template usage
-  get loading$() { return this.projectsService.loading$; }
-  get usingCache$() { return this.projectsService.usingCache$; }
+
 
   ngOnInit(): void {
     console.log('WorkComponent initializing...');
@@ -95,7 +95,7 @@ export class WorkComponent implements OnInit, OnDestroy {
 
   // Helper for ngFor in template to maintain performance and focus
   trackByProject(index: number, project: Project): string | number {
-    return project.id || project._id || index;
+    return project._id || index;
   }
 
   private loadInitialData(): void {
@@ -124,22 +124,6 @@ export class WorkComponent implements OnInit, OnDestroy {
           console.error('Error in component loading projects:', error);
           // Service handles fallback emission, so we don't need to manually set fallback here
         }
-      });
-
-    // 2. Load Categories
-    this.projectsService.getCategories()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (categories) => this.categories = categories,
-        error: (err) => console.warn('Category load failed', err)
-      });
-
-    // 3. Load Technologies
-    this.projectsService.getTechnologies()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (techs) => this.technologies = techs,
-        error: (err) => console.warn('Tech load failed', err)
       });
   }
 
@@ -233,7 +217,7 @@ export class WorkComponent implements OnInit, OnDestroy {
     this.projectsService.forceRefresh()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (projects) => {
+        next: (projects: Project[]) => {
           // Re-apply the same data sanitization as loadInitialData
           this.projects = projects.map(p => ({
             ...p,
