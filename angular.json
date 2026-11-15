@@ -96,7 +96,7 @@
         "deploy": {
           "builder": "@netlify-builder/deploy:deploy",
           "options": {
-            "outputPath": "./dist",
+            "outputPath": "./dist"
           }
         }
       }
