@@ -168,8 +168,28 @@ export class ProjectService {
   getAllProjects(): Observable<Project[]> {
     this.loadingSubject.next(true);
     this.usingCacheSubject.next(false);
-    this.projectsSubject.next(this.fallbackProjects);
-    return this.projectsSubject.asObservable();
+
+
+    return this.http.get<Project[]>("/get-projects")
+      .pipe(
+        tap(response => {
+          if (response && response && response.length > 0) {
+            this.cacheProjects(response);
+            this.projectsSubject.next(response);
+            this.usingCacheSubject.next(false);
+          }
+          this.loadingSubject.next(false);
+        }),
+        catchError(error => {
+          console.error('Error fetching paginated projects:', error);
+          // Create fallback response from cached data
+          const cachedProjects = this.getCachedProjects() || this.fallbackProjects;
+
+          this.usingCacheSubject.next(true);
+          this.loadingSubject.next(false);
+          return of(cachedProjects);
+        })
+      );
 
   }
 
