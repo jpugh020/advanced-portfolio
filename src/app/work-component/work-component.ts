@@ -78,7 +78,9 @@ export class WorkComponent implements OnInit, OnDestroy {
   constructor() {}
 
   // Getters for template usage
-
+  get loading$() {
+    return this.projectsService.loading$;
+ }
 
   ngOnInit(): void {
     console.log('WorkComponent initializing...');

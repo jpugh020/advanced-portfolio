@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { getDatabase, getConnectionString } from '@netlify/database';
 import { Observable, BehaviorSubject, catchError, map, tap, of} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
@@ -34,7 +33,6 @@ export interface ProjectFilters {
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
-  private readonly connectionString = getConnectionString();
   private readonly CACHE_KEY = 'portfolio_projects_cache';
   private readonly CACHE_TIMESTAMP_KEY = 'portfolio_projects_cache_timestamp';
   private readonly CACHE_DURATION = 24 * 60 * 60 * 1000;
@@ -170,27 +168,9 @@ export class ProjectService {
   getAllProjects(): Observable<Project[]> {
     this.loadingSubject.next(true);
     this.usingCacheSubject.next(false);
+    this.projectsSubject.next(this.fallbackProjects);
+    return this.projectsSubject.asObservable();
 
-    return this.http.get<Project[]>(this.connectionString).pipe(
-      tap(projects => {
-        if (projects && projects.length > 0) {
-          this.cacheProjects(projects);
-          this.projectsSubject.next(projects);
-          this.usingCacheSubject.next(false);
-        } else {
-          console.warn("Server returned empty response, using fallback data");
-          this.useFallbackData();
-        }
-        this.loadingSubject.next(false);
-      }), catchError(error => {
-        console.error("Error fetching projects from database: ", error);
-        this.useFallbackData();
-        this.loadingSubject.next(false);
-
-        const cachedProjects = this.getCachedProjects() || this.fallbackProjects;
-        return of(cachedProjects);
-      })
-    )
   }
 
 }
