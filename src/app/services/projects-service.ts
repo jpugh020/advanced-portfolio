@@ -31,6 +31,10 @@ export interface ProjectFilters {
   technologies?: string[];
 }
 
+export interface ProjectsResponse {
+  projects: Project[]
+}
+
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
   private readonly CACHE_KEY = 'portfolio_projects_cache';
@@ -173,7 +177,7 @@ export class ProjectService {
     return this.http.get<Project[]>("/get-projects")
       .pipe(
         tap(response => {
-          if (response && response && response.length > 0) {
+          if (response && response.length && response.length > 0) {
             this.cacheProjects(response);
             this.projectsSubject.next(response);
             this.usingCacheSubject.next(false);
