@@ -111,13 +111,6 @@ export class WorkComponent implements OnInit, OnDestroy {
           // DATA SANITIZATION:
           // Supabase returns dates as strings. We map them to real Date objects here
           // so the rest of the app doesn't crash on date methods.
-          this.projects = rawProjects.map(p => ({
-            ...p,
-            startdate: new Date(p.startdate),
-            enddate: p.enddate ? new Date(p.enddate) : undefined,
-            // Ensure technologies is always an array to prevent split() errors
-            technologies: Array.isArray(p.technologies) ? p.technologies : []
-          }));
 
           console.log('Projects processed:', this.projects.length);
           this.applyFilters(); // Run filters immediately to populate the view

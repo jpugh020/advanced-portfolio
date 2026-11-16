@@ -4,7 +4,7 @@ import { Config } from '@netlify/functions';
 const db = getDatabase();
 
 export default async (req: Request) => {
-  const projects = await db.sql`SELECT * FROM projects ORDER BY id;`;
+  const projects = await db.sql`SELECT * FROM projects.projects;`;
 
   return Response.json({ projects });
 }

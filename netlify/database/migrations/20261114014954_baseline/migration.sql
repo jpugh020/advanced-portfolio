@@ -93,3 +93,6 @@ ALTER TABLE projects.projects ENABLE ROW LEVEL SECURITY;
 --
 -- PostgreSQL database dump complete
 --
+
+
+INSERT INTO projects.projects (_id, title, description, technologies, githuburl, liveurl, featured) VALUES("1", "Portfolio Website", "An advanced web-app written using Angular, PostgreSQL, and TailwindCSS", ["Angular", "PostgreSQL", "TailwindCSS"], "https://www.github.com/jpugh020/advanced-portfolio", "www.pughdev.com", true);
