@@ -45,7 +45,7 @@ import { BlogService, BlogPost } from '../services/blog.service';
 export class BlogComponent implements OnInit, OnDestroy {
   // Signals for reactive state management
   public themeService = inject(ThemeService);
-
+  public isDarkMode = this.themeService.isDarkMode;
   posts = signal<BlogPost[]>([]);
   totalCount = signal<number>(0);
   currentPage = signal<number>(1);
@@ -60,7 +60,7 @@ export class BlogComponent implements OnInit, OnDestroy {
   // Computed properties
   hasResults = computed(() => this.posts().length > 0);
   showPagination = computed(() => this.totalPages() > 1);
-  
+
   // Configuration
   readonly pageSize = 5;
   private destroy$ = new Subject<void>();
@@ -98,13 +98,13 @@ export class BlogComponent implements OnInit, OnDestroy {
    */
   loadBlogPosts(): void {
     this.isLoading.set(true);
-    
+
     const currentPage = this.currentPage();
     const searchQuery = this.searchQuery();
     const selectedTag = this.selectedTag();
 
     let request;
-    
+
     if (searchQuery) {
       request = this.blogService.searchPosts(searchQuery);
     } else if (selectedTag) {
@@ -121,7 +121,7 @@ export class BlogComponent implements OnInit, OnDestroy {
         const startIndex = (currentPage - 1) * this.pageSize;
         const endIndex = startIndex + this.pageSize;
         const totalPosts = posts.length;
-        
+
         // Update signals
         this.totalCount.set(totalPosts);
         this.totalPages.set(Math.ceil(totalPosts / this.pageSize));
@@ -152,7 +152,7 @@ export class BlogComponent implements OnInit, OnDestroy {
   onPageChange(event: PageEvent): void {
     this.currentPage.set(event.pageIndex + 1);
     this.loadBlogPosts();
-    
+
     // Scroll to top of blog list
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -230,7 +230,7 @@ export class BlogComponent implements OnInit, OnDestroy {
   private getCacheAgeString(): string {
     const age = this.cacheAge();
     if (!age) return '';
-    
+
     if (age < 1) {
       return `${Math.round(age * 60)} min ago`;
     } else if (age < 24) {
@@ -260,7 +260,7 @@ export class BlogComponent implements OnInit, OnDestroy {
           const startIndex = (this.currentPage() - 1) * this.pageSize;
           const endIndex = startIndex + this.pageSize;
           const totalPosts = posts.length;
-          
+
           this.totalCount.set(totalPosts);
           this.totalPages.set(Math.ceil(totalPosts / this.pageSize));
           this.posts.set(posts.slice(startIndex, endIndex));

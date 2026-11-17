@@ -24,7 +24,7 @@ export class Nav implements OnInit, AfterViewInit {
     );
     public themeService = inject(ThemeService);
   isDesktop: boolean = false;
-  public isDarkMode: boolean = this.themeService.isDarkMode;
+  public isDarkMode: boolean = this.themeService.isDarkMode();
   isMenuOpen = false;
   links = ['About', 'Work', 'Contact', 'Blog'];
 
@@ -35,7 +35,7 @@ export class Nav implements OnInit, AfterViewInit {
   @ViewChild('darkModeSwitch', { read: ElementRef }) desktopToggle: ElementRef | undefined;
   @ViewChild('darkModeSwitchMobile', { read: ElementRef }) mobileToggle: ElementRef | undefined;
 
-  
+
 
   ngOnInit() {
     this.isHandset$.subscribe(isHandset => {
@@ -55,7 +55,7 @@ export class Nav implements OnInit, AfterViewInit {
     if (this.desktopToggle) {
       this.updateToggleIcons(this.desktopToggle);
     }
-    
+
     // Handle mobile toggle icons
     if (this.mobileToggle) {
       this.updateToggleIcons(this.mobileToggle);
@@ -69,11 +69,11 @@ export class Nav implements OnInit, AfterViewInit {
     try {
       const onIcon = element.nativeElement.querySelector('.mdc-switch__icon--on');
       const offIcon = element.nativeElement.querySelector('.mdc-switch__icon--off');
-      
+
       if (onIcon?.firstChild) {
         onIcon.firstChild.setAttribute('d', this.moon);
       }
-      
+
       if (offIcon?.firstChild) {
         offIcon.firstChild.setAttribute('d', this.sun);
       }
@@ -89,7 +89,7 @@ export class Nav implements OnInit, AfterViewInit {
     this.themeService.setDarkMode();
     this.themeService.applyTheme();
 
-    
+
     // Update icons for both toggles after theme change
     setTimeout(() => {
       if (this.desktopToggle) {
@@ -100,11 +100,11 @@ export class Nav implements OnInit, AfterViewInit {
       }
     }, 0);
 
-    this.isDarkMode = this.themeService.isDarkMode;
+    this.isDarkMode = this.themeService.isDarkMode();
   }
 
 
-  
+
 
   /**
    * Toggles the mobile menu visibility
@@ -124,18 +124,18 @@ export class Nav implements OnInit, AfterViewInit {
    * Handles navigation link clicks
    */
   onLinkClick(link: string): void {
- 
+
     this.closeMenu();
   }
 
   /**
-   * Closes mobile menu when clicking outside of it 
+   * Closes mobile menu when clicking outside of it
    */
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     const target = event.target as HTMLElement;
     const nav = target.closest('nav');
-    
+
     // If click is outside the nav and menu is open, close it
     if (!nav && this.isMenuOpen) {
       this.closeMenu();
@@ -143,7 +143,7 @@ export class Nav implements OnInit, AfterViewInit {
   }
 
   /**
-   * Closes mobile menu on escape key press 
+   * Closes mobile menu on escape key press
    */
   @HostListener('document:keydown.escape')
   onEscapeKey(): void {

@@ -46,7 +46,7 @@ export class WorkComponent implements OnInit, OnDestroy {
   private snackBar = inject(MatSnackBar);
   private projectsService = inject(ProjectService);
 
-  public isDarkMode: boolean = this.themeService.getTheme();
+  public isDarkMode: boolean = this.themeService.isDarkMode();
   public projects: Project[] = [];
   public filteredProjects: Project[] = [];
   public categories: string[] = [];
@@ -84,7 +84,7 @@ export class WorkComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('WorkComponent initializing...');
-    this.isDarkMode = this.themeService.getTheme(); // Ensure theme is set
+    this.isDarkMode = this.themeService.isDarkMode(); // Ensure theme is set
     this.loadInitialData();
     this.setupFilterSubscriptions();
     this.monitorCacheStatus();

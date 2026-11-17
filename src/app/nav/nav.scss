@@ -12,3 +12,7 @@
   width: 100% !important;
   text-align: left !important;
 }
+
+::ng-deep .mat-tab-header {
+  border-bottom: none !important;
+}

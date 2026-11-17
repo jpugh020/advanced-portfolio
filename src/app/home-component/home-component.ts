@@ -14,9 +14,9 @@ import { RouterLink } from '@angular/router';
 })
 export class HomeComponent {
   private themeService = inject(ThemeService);
-public isDarkMode: boolean = this.themeService.getTheme();
+public isDarkMode: boolean = this.themeService.isDarkMode();
 public update(): boolean {
-  this.isDarkMode = this.themeService.getTheme();
+  this.isDarkMode = this.themeService.isDarkMode();
   return this.isDarkMode;
 }
 
@@ -24,6 +24,3 @@ public update(): boolean {
 
 
 }
-
-
-

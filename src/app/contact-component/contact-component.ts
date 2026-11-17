@@ -77,7 +77,7 @@ export class ContactComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Initial theme setup
-    this.isDarkMode = this.themeService.getTheme();
+    this.isDarkMode = this.themeService.isDarkMode();
     this.themeService.applyTheme();
 
     // Listen for theme changes (if you add a theme observable to your service)
@@ -92,7 +92,7 @@ export class ContactComponent implements OnInit, OnDestroy {
 
   // Method to update theme reactively
   updateTheme() {
-    this.isDarkMode = this.themeService.getTheme();
+    this.isDarkMode = this.themeService.isDarkMode();
     return this.isDarkMode;
   }
 
